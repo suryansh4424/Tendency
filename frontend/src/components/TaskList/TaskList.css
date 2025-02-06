@@ -123,3 +123,78 @@
   border-radius: 4px;
   margin-bottom: 24px;
 }
+
+.task-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.task-item:hover .task-actions {
+  opacity: 1;
+}
+
+.edit-btn,
+.delete-btn {
+  background: none;
+  border: none;
+  color: #7d8590;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.edit-btn:hover {
+  color: #58a6ff;
+  background: rgba(88, 166, 255, 0.1);
+}
+
+.delete-btn:hover {
+  color: #f85149;
+  background: rgba(248, 81, 73, 0.1);
+}
+
+.edit-form {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  align-items: center;
+}
+
+.edit-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.save-btn,
+.cancel-btn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.save-btn {
+  background: linear-gradient(45deg, #238636, #2ea043);
+  color: white;
+}
+
+.save-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(46, 160, 67, 0.3);
+}
+
+.cancel-btn {
+  background: rgba(248, 81, 73, 0.1);
+  color: #f85149;
+}
+
+.cancel-btn:hover {
+  background: rgba(248, 81, 73, 0.2);
+}

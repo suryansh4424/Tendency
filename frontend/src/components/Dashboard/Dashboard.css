@@ -38,17 +38,21 @@
   border-radius: 16px;
   margin-bottom: 32px;
   animation: fadeIn 0.6s ease-out;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .daily-quote q {
   font-size: 20px;
   color: #c9d1d9;
   font-style: italic;
+  display: block;
+  margin-bottom: 12px;
+  line-height: 1.5;
 }
 
 .daily-quote p {
   color: #7d8590;
-  margin-top: 12px;
+  font-size: 16px;
 }
 
 .error-message {
@@ -66,4 +70,9 @@
   padding: 20px;
   color: #666;
   font-size: 1.1rem;
+}
+
+@keyframes quoteChange {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
 }

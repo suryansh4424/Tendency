@@ -86,3 +86,32 @@ exports.deleteTask = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// Update task
+exports.updateTask = async (req, res) => {
+  try {
+    const { title } = req.body;
+    
+    if (!title || !title.trim()) {
+      return res.status(400).json({ message: 'Task title is required' });
+    }
+
+    const task = await Task.findOne({
+      _id: req.params.id,
+      user: req.user._id
+    });
+
+    if (!task) {
+      return res.status(404).json({ message: 'Task not found' });
+    }
+
+    task.title = title.trim();
+    const updatedTask = await task.save();
+    
+    console.log('Task updated:', updatedTask);
+    res.json(updatedTask);
+  } catch (error) {
+    console.error('Error in updateTask:', error);
+    res.status(400).json({ message: error.message });
+  }
+};
