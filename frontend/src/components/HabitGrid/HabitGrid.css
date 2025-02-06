@@ -1,0 +1,108 @@
+.habit-grid {
+  background: #0d1117;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin: 20px auto;
+  max-width: 900px;
+}
+
+.grid-wrapper {
+  position: relative;
+  padding-top: 20px;
+}
+
+.month-labels {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+}
+
+.month-label {
+  flex: 1;
+  text-align: center;
+  font-size: 12px;
+  color: #7d8590;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(52, 1fr);
+  grid-template-rows: repeat(7, 1fr);
+  gap: 3px;
+  margin: 20px 0;
+}
+
+.grid-cell {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+
+.grid-cell:hover {
+  transform: scale(1.2);
+}
+
+.grid-cell.empty {
+  background-color: #161b22;
+}
+
+.grid-cell.intensity-1 {
+  background-color: #0e4429;
+}
+
+.grid-cell.intensity-2 {
+  background-color: #006d32;
+}
+
+.grid-cell.intensity-3 {
+  background-color: #26a641;
+}
+
+.grid-cell.intensity-4 {
+  background-color: #39d353;
+}
+
+.grid-legend {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
+  font-size: 12px;
+  color: #7d8590;
+}
+
+.legend-cells {
+  display: flex;
+  gap: 3px;
+}
+
+.legend-cells .grid-cell {
+  width: 10px;
+  height: 10px;
+}
+
+@media (max-width: 768px) {
+  .grid-wrapper {
+    padding-left: 25px;
+  }
+
+  .weekday-label {
+    font-size: 8px;
+    padding-right: 4px;
+  }
+
+  .grid-cell {
+    width: 10px;
+    height: 10px;
+  }
+
+  .month-label {
+    font-size: 10px;
+  }
+}
