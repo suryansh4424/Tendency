@@ -7,44 +7,72 @@
   max-width: 900px;
 }
 
+.grid-scroll-container {
+  overflow-x: auto;
+  margin: 20px -20px;
+  padding: 0 20px;
+}
+
 .grid-wrapper {
-  position: relative;
+  display: flex;
+  gap: 16px;
+  min-width: 800px;
+}
+
+.weekday-labels {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  padding-top: 30px;
+  position: sticky;
+  left: 0;
+  background: #0d1117;
+  z-index: 1;
+  padding-right: 16px;
+}
+
+.weekday-label {
+  color: #7d8590;
+  font-size: 12px;
+  height: 15px;
+  line-height: 15px;
+}
+
+.grid-content {
+  flex: 1;
   padding-top: 20px;
 }
 
 .month-labels {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  display: flex;
+  position: relative;
+  height: 20px;
+  margin-bottom: 8px;
 }
 
 .month-label {
-  flex: 1;
-  text-align: center;
+  position: absolute;
   font-size: 12px;
   color: #7d8590;
+  top: 0;
 }
 
 .grid-container {
   display: grid;
-  grid-template-columns: repeat(52, 1fr);
-  grid-template-rows: repeat(7, 1fr);
-  gap: 3px;
-  margin: 20px 0;
+  grid-template-columns: repeat(53, 15px);
+  grid-template-rows: repeat(7, 15px);
+  gap: 2px;
 }
 
 .grid-cell {
-  width: 12px;
-  height: 12px;
+  width: 15px;
+  height: 15px;
   border-radius: 2px;
-  transition: transform 0.2s;
-  cursor: pointer;
+  background-color: #161b22;
+  transition: transform 0.15s ease-in-out;
 }
 
 .grid-cell:hover {
-  transform: scale(1.2);
+  transform: scale(1.25);
 }
 
 .grid-cell.empty {
@@ -72,19 +100,39 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  margin-top: 20px;
+  margin-top: 16px;
   font-size: 12px;
   color: #7d8590;
+  padding-bottom: 10px;
 }
 
 .legend-cells {
   display: flex;
-  gap: 3px;
+  gap: 2px;
 }
 
 .legend-cells .grid-cell {
-  width: 10px;
-  height: 10px;
+  width: 15px;
+  height: 15px;
+}
+
+/* Scrollbar styling */
+.grid-scroll-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.grid-scroll-container::-webkit-scrollbar-track {
+  background: #161b22;
+  border-radius: 4px;
+}
+
+.grid-scroll-container::-webkit-scrollbar-thumb {
+  background: #30363d;
+  border-radius: 4px;
+}
+
+.grid-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: #3f4751;
 }
 
 @media (max-width: 768px) {
@@ -105,4 +153,41 @@
   .month-label {
     font-size: 10px;
   }
+}
+
+.grid-tooltip {
+  position: fixed;
+  background: rgba(0, 0, 0, 0.95);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 12px;
+  color: #fff;
+  pointer-events: none;
+  z-index: 1000;
+  transform: translate(-50%, -100%);
+  white-space: nowrap;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.tooltip-date {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.tooltip-stats {
+  color: #7d8590;
+}
+
+.grid-tooltip::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid rgba(0, 0, 0, 0.95);
 }

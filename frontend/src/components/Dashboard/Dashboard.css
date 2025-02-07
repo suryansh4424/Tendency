@@ -3,31 +3,79 @@
 }
 
 .dashboard-header {
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 40px;
-  animation: fadeIn 0.5s ease-out;
+  padding: 0 20px;
+  position: relative;
 }
 
-.dashboard-header h1 {
+.header-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.header-left h1 {
   font-size: 48px;
-  margin-bottom: 12px;
   background: linear-gradient(45deg, #58a6ff, #39d353);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   font-weight: 700;
+  margin: 0;
+  position: relative;
 }
 
-.dashboard-header p {
+.header-left p {
   color: #7d8590;
   font-size: 18px;
+  margin: 8px 0 0 0;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 60px;
+  width: 100%;
+  text-align: center;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+.upgrade-button {
+  background: linear-gradient(45deg, #238636, #2ea043);
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.upgrade-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(46, 160, 67, 0.3);
 }
 
 .dashboard-content {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
   max-width: 1000px;
   margin: 0 auto;
+}
+
+/* Remove the side-by-side specific styles */
+.task-list {
+  max-width: 600px;
+  margin: 20px auto;
+}
+
+.habit-grid {
+  max-width: 900px;
+  margin: 20px auto;
 }
 
 /* Motivational quote */
@@ -75,4 +123,45 @@
 @keyframes quoteChange {
   0% { opacity: 0; transform: translateY(10px); }
   100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Add these styles */
+.premium-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: linear-gradient(45deg, #238636, #2ea043);
+  border-radius: 20px;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.premium-badge::before {
+  content: "✨";
+}
+
+.premium-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.downgrade-button {
+  background: rgba(255, 255, 255, 0.1);
+  color: #7d8590;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.downgrade-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #c9d1d9;
+  border-color: rgba(255, 255, 255, 0.2);
 }

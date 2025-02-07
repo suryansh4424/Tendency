@@ -4,6 +4,8 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const taskRoutes = require('./routes/taskRoutes');
 const progressRoutes = require('./routes/progressRoutes');
+const userRoutes = require('./routes/userRoutes');
+const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 
@@ -18,9 +20,23 @@ app.use(cors({
 // Middleware
 app.use(express.json());
 
+// JWT Secret check
+if (!process.env.JWT_SECRET) {
+  console.error('JWT_SECRET is not set in environment variables!');
+  process.exit(1);
+}
+
+// Request logging middleware
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+  next();
+});
+
 // Routes
 app.use('/api/tasks', taskRoutes);
 app.use('/api/progress', progressRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/auth', authRoutes);
 
 // Add this before your routes
 app.get('/api/test', (req, res) => {
@@ -29,8 +45,11 @@ app.get('/api/test', (req, res) => {
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: 'Something went wrong!' });
+  console.error('Error:', err);
+  res.status(500).json({ 
+    message: 'Something went wrong!',
+    error: err.message 
+  });
 });
 
 // Connect to MongoDB
