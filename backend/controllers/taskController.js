@@ -19,63 +19,41 @@ const isYesterday = (date) => {
 // Get all tasks
 exports.getTasks = async (req, res) => {
   try {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    // Get today's tasks
-    let todayTasks = await Task.find({
-      user: req.user._id,
-      date: {
-        $gte: today,
-        $lt: new Date(today.getTime() + 24 * 60 * 60 * 1000)
-      }
-    });
-
-    // If no tasks exist for today, copy yesterday's recurring tasks
-    if (todayTasks.length === 0) {
-      const yesterday = new Date(today);
-      yesterday.setDate(yesterday.getDate() - 1);
-      
-      const yesterdayTasks = await Task.find({
-        user: req.user._id,
-        date: {
-          $gte: yesterday,
-          $lt: today
-        },
-        isRecurring: true
-      });
-
-      // Create new tasks for today based on yesterday's tasks
-      const newTasks = await Promise.all(yesterdayTasks.map(async (task) => {
-        const newTask = new Task({
-          title: task.title,
-          user: req.user._id,
-          completed: false,
-          date: new Date(),
-          originalTask: task.originalTask || task._id,
-          isRecurring: true
-        });
-        return newTask.save();
-      }));
-
-      todayTasks = newTasks;
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({ message: 'Authentication required' });
     }
 
-    // Get yesterday's tasks as well
+    const userId = req.user._id.toString();
+    console.log('User ID from token:', userId);
+    console.log('Full user object:', req.user);
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
-    
-    const yesterdayTasks = await Task.find({
-      user: req.user._id,
+
+    // Add strict user filtering
+    const tasks = await Task.find({
+      user: userId,
       date: {
         $gte: yesterday,
-        $lt: today
+        $lt: tomorrow
       }
+    }).lean();
+
+    // Double-check each task belongs to the user
+    const userTasks = tasks.filter(task => task.user.toString() === userId);
+    
+    console.log(`Found ${userTasks.length} tasks for user ${userId}`);
+    
+    // Log some task details for debugging
+    userTasks.forEach(task => {
+      console.log(`Task: ${task._id}, User: ${task.user}, Title: ${task.title}`);
     });
 
-    // Combine and send both days' tasks
-    const allTasks = [...yesterdayTasks, ...todayTasks];
-    res.json(allTasks);
+    res.json(userTasks);
   } catch (error) {
     console.error('Error in getTasks:', error);
     res.status(500).json({ message: error.message });
@@ -85,57 +63,43 @@ exports.getTasks = async (req, res) => {
 // Add new task
 exports.createTask = async (req, res) => {
   try {
-    console.log('Create task request:', {
-      body: req.body,
-      user: req.user,
-      isPro: req.user.isPro
-    });
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({ message: 'Authentication required' });
+    }
+
+    const userId = req.user._id.toString();
+    console.log('Creating task for user:', userId);
+    console.log('Full user object:', req.user);
 
     const { title } = req.body;
     
-    if (!title || !title.trim()) {
+    if (!title?.trim()) {
       return res.status(400).json({ message: 'Task title is required' });
     }
-    
-    // Count only today's tasks
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
 
-    const todayTaskCount = await Task.countDocuments({
-      user: req.user._id,
-      date: {
-        $gte: today,
-        $lt: tomorrow
-      }
+    // Check for duplicate task in the last minute
+    const oneMinuteAgo = new Date(Date.now() - 60 * 1000);
+    const existingTask = await Task.findOne({
+      user: userId,
+      title: title.trim(),
+      createdAt: { $gt: oneMinuteAgo }
     });
 
-    console.log('Task count check:', {
-      todayTaskCount,
-      userIsPro: req.user.isPro,
-      maxAllowed: req.user.isPro ? 10 : 3
-    });
-
-    // Check task limit based on user status
-    const maxTasks = req.user.isPro ? 10 : 3;
-    if (todayTaskCount >= maxTasks) {
-      const message = req.user.isPro 
-        ? 'Premium users can only create up to 10 tasks per day'
-        : 'Free users can only create up to 3 tasks per day. Upgrade to Premium for up to 10 tasks!';
-      
-      return res.status(403).json({ message });
+    if (existingTask) {
+      console.log('Duplicate task detected');
+      return res.status(201).json(existingTask);
     }
 
+    // Create new task with explicit user ID
     const task = new Task({
       title: title.trim(),
-      user: req.user._id,
-      date: req.body.date || new Date(),
+      user: userId,
+      date: new Date(),
       isRecurring: req.body.isRecurring || false
     });
 
     const savedTask = await task.save();
-    console.log('Task saved:', savedTask);
+    console.log(`New task created - ID: ${savedTask._id}, User: ${userId}, Title: ${savedTask.title}`);
     res.status(201).json(savedTask);
   } catch (error) {
     console.error('Create task error:', error);
@@ -173,15 +137,17 @@ exports.deleteTask = async (req, res) => {
   try {
     const task = await Task.findOneAndDelete({
       _id: req.params.id,
-      user: req.user._id
+      user: req.user._id // Strict user check
     });
 
     if (!task) {
       return res.status(404).json({ message: 'Task not found' });
     }
 
+    console.log(`Task ${req.params.id} deleted by user ${req.user._id}`);
     res.json({ message: 'Task deleted' });
   } catch (error) {
+    console.error('Delete task error:', error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -191,22 +157,25 @@ exports.updateTask = async (req, res) => {
   try {
     const task = await Task.findOne({
       _id: req.params.id,
-      user: req.user._id
+      user: req.user._id // Strict user check
     });
 
     if (!task) {
       return res.status(404).json({ message: 'Task not found' });
     }
 
-    // Only allow editing tasks from today or yesterday
-    if (!isToday(task.date) && !isYesterday(task.date)) {
-      return res.status(403).json({ message: 'Can only modify tasks from today or yesterday' });
+    // Double-check ownership
+    if (!task.belongsTo(req.user._id)) {
+      return res.status(403).json({ message: 'Not authorized to modify this task' });
     }
 
     task.title = req.body.title.trim();
     const updatedTask = await task.save();
+    
+    console.log(`Task ${task._id} updated by user ${req.user._id}`);
     res.json(updatedTask);
   } catch (error) {
+    console.error('Update task error:', error);
     res.status(400).json({ message: error.message });
   }
 };
@@ -217,7 +186,7 @@ exports.transferTasks = async (req, res) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     
-    // Get yesterday's recurring tasks
+    // Only get recurring tasks from yesterday for this specific user
     const yesterdayTasks = await Task.find({
       user: req.user._id,
       date: {
@@ -227,6 +196,19 @@ exports.transferTasks = async (req, res) => {
       isRecurring: true
     });
 
+    // Don't create new tasks if there are already tasks for today
+    const todayTasksExist = await Task.exists({
+      user: req.user._id,
+      date: {
+        $gte: today,
+        $lt: new Date(today.getTime() + 24 * 60 * 60 * 1000)
+      }
+    });
+
+    if (todayTasksExist) {
+      return res.json([]); // Return empty array if tasks already exist for today
+    }
+
     // Create new tasks for today
     const newTasks = await Promise.all(yesterdayTasks.map(async (task) => {
       const newTask = new Task({
@@ -234,7 +216,6 @@ exports.transferTasks = async (req, res) => {
         user: req.user._id,
         completed: false,
         date: new Date(),
-        originalTask: task.originalTask || task._id,
         isRecurring: true
       });
       return newTask.save();

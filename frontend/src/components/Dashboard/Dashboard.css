@@ -43,18 +43,23 @@
 .header-right {
   display: flex;
   align-items: center;
+  gap: 16px;
+}
+
+.upgrade-button,
+.downgrade-button {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .upgrade-button {
   background: linear-gradient(45deg, #238636, #2ea043);
   color: white;
   border: none;
-  padding: 12px 28px;
-  border-radius: 8px;
   font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
 }
 
 .upgrade-button:hover {
@@ -127,13 +132,10 @@
 
 /* Add these styles */
 .premium-badge {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  background: linear-gradient(45deg, #238636, #2ea043);
-  border-radius: 20px;
-  color: white;
+  padding: 6px 12px;
+  background: rgba(46, 160, 67, 0.1);
+  color: #2ea043;
+  border-radius: 6px;
   font-size: 14px;
   font-weight: 600;
 }
@@ -152,12 +154,7 @@
   background: rgba(255, 255, 255, 0.1);
   color: #7d8590;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 8px 16px;
-  border-radius: 6px;
   font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
 }
 
 .downgrade-button:hover {

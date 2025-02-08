@@ -3,6 +3,7 @@ import TaskList from '../TaskList/TaskList';
 import HabitGrid from '../HabitGrid/HabitGrid';
 import Login from '../Login/Login';
 import Register from '../Register/Register';
+import UserProfile from '../UserProfile/UserProfile';
 import './Dashboard.css';
 import { getTokenData, isTokenValid } from '../../utils/auth';
 
@@ -15,10 +16,19 @@ const Dashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authMode, setAuthMode] = useState('login'); // 'login' or 'register'
+  const [userData, setUserData] = useState(null);
 
   useEffect(() => {
     console.log('Dashboard mounted');
     fetchTasks();
+  }, []);
+
+  useEffect(() => {
+    // Try to get user data from localStorage on mount
+    const storedUserData = localStorage.getItem('userData');
+    if (storedUserData) {
+      setUserData(JSON.parse(storedUserData));
+    }
   }, []);
 
   const fetchTasks = async () => {
@@ -329,14 +339,22 @@ const Dashboard = () => {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setIsAuthenticated(false);
+    setIsProUser(false);
+  };
+
   return (
     <>
       {!isAuthenticated ? (
         authMode === 'login' ? (
           <Login 
             onLoginSuccess={(data) => {
+              console.log('Login success data:', data);
               setIsAuthenticated(true);
               setIsProUser(data.user.isPro);
+              setUserData(data.user);
               fetchTasks();
             }}
             switchToRegister={() => setAuthMode('register')} 
@@ -346,6 +364,7 @@ const Dashboard = () => {
             onRegisterSuccess={(data) => {
               setIsAuthenticated(true);
               setIsProUser(data.user.isPro);
+              setUserData(data.user);
               fetchTasks();
             }}
             switchToLogin={() => setAuthMode('login')} 
@@ -380,6 +399,17 @@ const Dashboard = () => {
                   Upgrade to Premium
                 </button>
               )}
+              <UserProfile 
+                user={userData || { username: 'User' }}
+                onLogout={() => {
+                  handleLogout();
+                  setUserData(null);
+                  localStorage.removeItem('userData');
+                }}
+                onProfileUpdate={(updatedUser) => {
+                  setUserData(updatedUser);
+                }}
+              />
             </div>
           </header>
           

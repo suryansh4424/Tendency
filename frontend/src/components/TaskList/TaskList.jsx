@@ -9,6 +9,7 @@ const TaskList = ({ tasks, onTaskComplete, onAddTask, onDeleteTask, onEditTask, 
   const [editingTask, setEditingTask] = useState(null);
   const [editText, setEditText] = useState('');
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Helper functions
   const isToday = (date) => {
@@ -52,7 +53,7 @@ const TaskList = ({ tasks, onTaskComplete, onAddTask, onDeleteTask, onEditTask, 
   // Event handlers
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!newTask.trim()) return;
+    if (isSubmitting || !newTask.trim()) return;
 
     try {
       if (!isTokenValid()) {
@@ -101,11 +102,13 @@ const TaskList = ({ tasks, onTaskComplete, onAddTask, onDeleteTask, onEditTask, 
         throw new Error(data.message || 'Failed to add task');
       }
 
-      onAddTask(newTask, selectedDate);
+      setIsSubmitting(true);
+      await onAddTask(newTask, selectedDate);
       setNewTask('');
     } catch (error) {
-      console.error('Add task error:', error);
-      alert(error.message);
+      console.error('Error adding task:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 

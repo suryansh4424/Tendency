@@ -6,6 +6,7 @@ const taskRoutes = require('./routes/taskRoutes');
 const progressRoutes = require('./routes/progressRoutes');
 const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
+const testRoute = require('./routes/testRoute');
 
 const app = express();
 
@@ -37,6 +38,7 @@ app.use('/api/tasks', taskRoutes);
 app.use('/api/progress', progressRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api', testRoute);
 
 // Add this before your routes
 app.get('/api/test', (req, res) => {
@@ -52,15 +54,38 @@ app.use((err, req, res, next) => {
   });
 });
 
+// First, log the connection string (without password) for debugging
+const connectionString = process.env.MONGODB_URI?.replace(
+  /\/\/([^:]+):([^@]+)@/, 
+  '//[username]:[password]@'
+);
+console.log('Attempting to connect to MongoDB:', connectionString);
+
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-}).then(() => console.log("MongoDB Connected"))
-  .catch(err => console.log("MongoDB connection error:", err));
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  retryWrites: true,
+  w: 'majority',
+  serverSelectionTimeoutMS: 5000
+}).then(() => {
+  console.log("MongoDB Connected Successfully");
+  // Start server only after successful DB connection
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    console.log(`Frontend can access at http://localhost:${PORT}/api`);
+  });
+}).catch(err => {
+  console.error("MongoDB connection error:", err);
+  process.exit(1);
+});
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Frontend can access at http://localhost:${PORT}/api`);
+// Add error handlers
+mongoose.connection.on('error', err => {
+  console.error('MongoDB error after initial connection:', err);
+});
+
+mongoose.connection.on('disconnected', () => {
+  console.log('MongoDB disconnected');
 });

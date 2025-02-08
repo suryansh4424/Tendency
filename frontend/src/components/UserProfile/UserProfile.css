@@ -1,0 +1,209 @@
+.user-profile {
+  position: relative;
+}
+
+.profile-button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  position: relative;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #2ea043, #238636);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.avatar.large {
+  width: 60px;
+  height: 60px;
+  font-size: 24px;
+}
+
+.profile-button:hover .avatar {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(46, 160, 67, 0.3);
+}
+
+.profile-menu {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  background: rgba(22, 27, 34, 0.95);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 16px;
+  min-width: 240px;
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+}
+
+.profile-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.user-details {
+  flex: 1;
+}
+
+.user-name {
+  font-weight: 600;
+  color: #c9d1d9;
+  margin-bottom: 4px;
+  font-size: 16px;
+}
+
+.user-username {
+  color: #8b949e;
+  font-size: 14px;
+  margin-bottom: 4px;
+  opacity: 0.8;
+}
+
+.user-email {
+  color: #8b949e;
+  font-size: 14px;
+  word-break: break-all;
+  opacity: 0.8;
+}
+
+.menu-items {
+  padding-top: 16px;
+}
+
+.membership-status {
+  padding: 8px 12px;
+  background: rgba(46, 160, 67, 0.1);
+  color: #2ea043;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+.logout-button {
+  width: 100%;
+  padding: 8px;
+  background: rgba(248, 81, 73, 0.1);
+  color: #f85149;
+  border: 1px solid rgba(248, 81, 73, 0.2);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.logout-button:hover {
+  background: rgba(248, 81, 73, 0.2);
+}
+
+.edit-profile-button {
+  margin-top: 12px;
+  padding: 4px 8px;
+  background: rgba(88, 166, 255, 0.1);
+  color: #58a6ff;
+  border: 1px solid rgba(88, 166, 255, 0.2);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.3s ease;
+}
+
+.edit-profile-button:hover {
+  background: rgba(88, 166, 255, 0.2);
+}
+
+.edit-profile-form {
+  padding: 16px;
+  min-width: 280px;
+}
+
+.edit-profile-form h3 {
+  margin: 0 0 16px 0;
+  color: #c9d1d9;
+  font-size: 16px;
+}
+
+.edit-profile-form .form-group {
+  margin-bottom: 12px;
+}
+
+.edit-profile-form label {
+  display: block;
+  margin-bottom: 4px;
+  color: #8b949e;
+  font-size: 12px;
+}
+
+.edit-profile-form input {
+  width: 100%;
+  padding: 8px 12px;
+  background: rgba(13, 17, 23, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  color: #c9d1d9;
+  font-size: 14px;
+}
+
+.edit-profile-form input:focus {
+  outline: none;
+  border-color: #58a6ff;
+  box-shadow: 0 0 0 2px rgba(88, 166, 255, 0.2);
+}
+
+.edit-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.save-button,
+.cancel-button {
+  flex: 1;
+  padding: 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.save-button {
+  background: #238636;
+  color: white;
+  border: none;
+}
+
+.save-button:hover {
+  background: #2ea043;
+}
+
+.cancel-button {
+  background: rgba(248, 81, 73, 0.1);
+  color: #f85149;
+  border: 1px solid rgba(248, 81, 73, 0.2);
+}
+
+.cancel-button:hover {
+  background: rgba(248, 81, 73, 0.2);
+}
+
+.user-fullname {
+  color: #8b949e;
+  font-size: 14px;
+  margin-bottom: 4px;
+  opacity: 0.8;
+} 

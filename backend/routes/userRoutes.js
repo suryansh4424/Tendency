@@ -6,37 +6,28 @@ const jwt = require('jsonwebtoken');
 
 router.post('/upgrade', auth, async (req, res) => {
   try {
-    console.log('Upgrade request - Current user:', req.user);
-
     const user = await User.findById(req.user._id);
+    
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Set premium status
     user.isPro = true;
     await user.save();
-    console.log('User upgraded:', user);
 
-    // Create new token with updated status
     const token = jwt.sign(
-      { 
-        userId: user._id,
-        isPro: true // Explicitly set to true
-      },
+      { userId: user._id, isPro: true },
       process.env.JWT_SECRET,
       { expiresIn: '24h' }
     );
 
-    // Return new token and user data
     res.json({
       token,
       user: {
         id: user._id,
         username: user.username,
         isPro: true
-      },
-      message: 'Successfully upgraded to premium'
+      }
     });
   } catch (error) {
     console.error('Upgrade error:', error);
@@ -99,6 +90,37 @@ router.get('/status', auth, async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+});
+
+// Add this route to update user profile
+router.patch('/profile', auth, async (req, res) => {
+  try {
+    const { name } = req.body;
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Only update name
+    if (name !== undefined) {
+      user.name = name;
+    }
+
+    await user.save();
+
+    res.json({
+      user: {
+        id: user._id,
+        username: user.username,
+        name: user.name,
+        email: user.email,
+        isPro: user.isPro
+      }
+    });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
   }
 });
 

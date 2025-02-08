@@ -8,16 +8,31 @@ const userSchema = new mongoose.Schema({
     unique: true,
     trim: true
   },
+  email: {
+    type: String,
+    trim: true,
+    lowercase: true,
+    sparse: true,
+    unique: true
+  },
   password: {
     type: String,
     required: true,
     minlength: 6
+  },
+  name: {
+    type: String,
+    trim: true
   },
   isPro: {
     type: Boolean,
     default: false
   },
   createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  lastLogin: {
     type: Date,
     default: Date.now
   }

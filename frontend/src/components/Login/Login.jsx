@@ -20,9 +20,11 @@ const Login = ({ onLoginSuccess, switchToRegister }) => {
       });
 
       const data = await response.json();
+      console.log('Login response:', data);
 
       if (response.ok) {
         localStorage.setItem('token', data.token);
+        localStorage.setItem('userData', JSON.stringify(data.user));
         onLoginSuccess(data);
       } else {
         setError(data.message || 'Login failed');
