@@ -12,7 +12,7 @@ A simple productivity tracking web app that lets users add daily tasks, track pr
 ## 🛠 Tech Stack
 - **Backend:** Node.js, Express, MongoDB  
 - **Frontend:** React.js  
-- **Auth:** JWT & Bcrypt  
+- **Auth:** JWT & Bcrypt
 
 ## 📦 Setup
 ```bash
